@@ -1,4 +1,4 @@
-package com.spotify.RunnerFile.StepDefinitions;
+package com.spotify.RunnerFile;
 
 
 import io.cucumber.testng.AbstractTestNGCucumberTests;
