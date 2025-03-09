@@ -14,12 +14,12 @@ public class SongDataManager {
         loadSongDataProperties();
     }
 
-    public static SongDataManager getInstance(){
+    protected static SongDataManager getInstance(){
         if(songDataManager == null) songDataManager = new SongDataManager();
         return songDataManager;
     }
 
-    void loadSongDataProperties(){
+    private void loadSongDataProperties(){
         try {
             InputStream file = Files.newInputStream(Paths.get("src/test/resources/PropertyFiles/SongsData.properties"));
             songDataProp = new Properties();

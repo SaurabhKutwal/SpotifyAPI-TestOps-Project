@@ -27,20 +27,20 @@ public class TokenManager {
 
     }
 
-    public static synchronized TokenManager getInstance(){
+    protected static synchronized TokenManager getInstance(){
         if(tokenManager == null){
             tokenManager = new TokenManager();
         }
         return tokenManager;
     }
 
-    boolean isTokenValid(String time){
+    private boolean isTokenValid(String time){
         Long creationTime = Long.parseLong(time);
         Long currentTime = System.currentTimeMillis()/1000;
         return (currentTime - creationTime) <= 3600;
     }
 
-    void loadTokenPropertyFile(){
+    private void loadTokenPropertyFile(){
         try {
             InputStream file = Files.newInputStream(Paths.get("src/test/resources/PropertyFiles/token.properties"));
             tokenProp = new Properties();
@@ -51,16 +51,16 @@ public class TokenManager {
         }
     }
 
-    void renewToken(){
+    private void renewToken(){
 
-        JsonPath jsonPath = given().log().all().baseUri("https://accounts.spotify.com")
+        JsonPath jsonPath = given().baseUri("https://accounts.spotify.com")
                 .contentType(ContentType.URLENC)
                 .formParam("grant_type","refresh_token")
                 .formParam("refresh_token",tokenProp.getProperty("refresh_token"))
                 .formParam("client_id","2c2cb6497aac493ba689e807323aa42a")
                 .formParam("client_secret","5da02064c57a4259baee9d9fdccb6047").
         when().post("/api/token").
-                then().log().all().assertThat().statusCode(200).extract().jsonPath();
+                then().assertThat().statusCode(200).extract().jsonPath();
 
         String newToken = jsonPath.getString("access_token");
         String newRefreshToken = jsonPath.getString("refresh_token");
@@ -70,7 +70,7 @@ public class TokenManager {
         updateTokenProperties(newToken, newRefreshToken, newTime);
     }
 
-    void updateTokenProperties(String newToken, String newRefreshToken, Long newTime){
+    private void updateTokenProperties(String newToken, String newRefreshToken, Long newTime){
         try{
 
             Properties prop = new Properties();

@@ -26,18 +26,31 @@
   #######################################################################################################################
 
     @UserService
-    Scenario: Verifyt that we can Follow artist
+    Scenario Outline: Verifyt that we can Follow artist
       Given Make a RequestSpecification with correct authorization token
+      And Artist name is <artistName>
       When Make a put request for following artists
       Then Verify status code is 204
+
+      Examples:
+      | artistName  |
+      | ArijitSingh |
+      | HoneySingh |
+      | ShreyaGhoshal |
+      | ARRaheman |
 
   #######################################################################################################################
 
     @UserService
-    Scenario: Verifyt that we can Unfollow artist
+    Scenario Outline: Verifyt that we can Unfollow artist
       Given Make a RequestSpecification with correct authorization token
+      And Artist name is <artistName>
       When Make a delete request for unfollowing artists
       Then Verify status code is 204
+
+      Examples:
+        | artistName  |
+        | HoneySingh |
 
   #######################################################################################################################
 

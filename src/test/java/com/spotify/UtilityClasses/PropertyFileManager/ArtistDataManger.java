@@ -17,12 +17,12 @@ public class ArtistDataManger {
         loadArtistProperties();
     }
 
-    public static ArtistDataManger getInstance(){
+    protected static ArtistDataManger getInstance(){
         if(artistDataManger == null) artistDataManger = new ArtistDataManger();
         return artistDataManger;
     }
 
-    void loadArtistProperties(){
+    private void loadArtistProperties(){
         try {
             InputStream file = Files.newInputStream(Paths.get("src/test/resources/PropertyFiles/artistsData.properties"));
             artistProp = new Properties();

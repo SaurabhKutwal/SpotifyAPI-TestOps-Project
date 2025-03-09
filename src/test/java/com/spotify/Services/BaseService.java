@@ -1,5 +1,6 @@
 package com.spotify.Services;
 
+import com.spotify.Filter.LogFilter;
 import com.spotify.UtilityClasses.PropertyFileManager.PropertyFileManager;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -10,6 +11,10 @@ public class BaseService {
     private static final String BASE_URI = "https://api.spotify.com";
     protected RequestSpecification requestSpecification;
     String authToken;
+
+    static{
+        RestAssured.filters(new LogFilter());
+    }
 
     protected BaseService(){
         authToken = PropertyFileManager.getTokenManager().tokenProp.getProperty("access_token");
@@ -32,6 +37,10 @@ public class BaseService {
     }
 
     protected void setBody(String body){
+        this.requestSpecification.body(body);
+    }
+
+    protected void setBody(Object body){
         this.requestSpecification.body(body);
     }
 

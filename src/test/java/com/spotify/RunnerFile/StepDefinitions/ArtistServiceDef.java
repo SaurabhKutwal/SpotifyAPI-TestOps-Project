@@ -1,18 +1,23 @@
 package com.spotify.RunnerFile.StepDefinitions;
 
+
 import com.spotify.Services.ArtistService;
 import com.spotify.UtilityClasses.PropertyFileManager.PropertyFileManager;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ArtistServiceDef extends BaseUtility {
 
+    private static final Logger logger = LogManager.getLogger(ArtistServiceDef.class);
+
     ArtistService artistService;
-    String artistId;
 
     @Given("Create ArtistService Entity")
     public void create_artist_service_entity() {
@@ -21,7 +26,6 @@ public class ArtistServiceDef extends BaseUtility {
 
     @Given("^Artist name is (.+)$")
     public synchronized void artist_name_is_shreya_ghoshal(String artistName) {
-        //artistId = "0oOet2f43PA68X5RxKobEy";
         artistId = PropertyFileManager.getArtistDataManager().artistProp.getProperty(artistName);
 
     }
@@ -31,9 +35,10 @@ public class ArtistServiceDef extends BaseUtility {
     }
     @Then("Check the information")
     public void check_the_information() {
-        System.out.println(jsonPath.get("type") + "\n" +
-                            jsonPath.get("name") + "\n" +
-                            jsonPath.get("followers.total"));
+        logger.info("Details of artists:");
+        logger.info("\n" +
+                "Name : " + jsonPath.get("name") + "\n" +
+                "Followers :" + jsonPath.get("followers.total"));
     }
 
     @When("^Make a Get request for top (.+) of given artist$")
@@ -46,14 +51,13 @@ public class ArtistServiceDef extends BaseUtility {
     @Then("Check the list of tracks")
     public void check_the_list_of_tracks() {
         List<LinkedHashMap> tracks = jsonPath.getList("tracks");
-        tracks.forEach(x -> System.out.println(x.get("name")));
+        tracks.forEach(x -> logger.info("Track : " + x.get("name")));
     }
 
 
     @Then("Check the list of albums")
     public void check_the_list_of_albums() {
         List<LinkedHashMap> albums = jsonPath.getList("items");
-        albums.forEach(x -> System.out.println(x.get("name")));
+        albums.forEach(x -> logger.info("Track : " + x.get("name")));
     }
-
 }

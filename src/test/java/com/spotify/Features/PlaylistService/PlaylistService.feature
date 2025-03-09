@@ -1,7 +1,6 @@
 
   Feature: Validate Playlist API services
 
-
     Background: Starting Playlist Serivce modules
       Given Create PlaylistService Entity
 

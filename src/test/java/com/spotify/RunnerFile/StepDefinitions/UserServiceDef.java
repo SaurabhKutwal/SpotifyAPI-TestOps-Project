@@ -1,17 +1,24 @@
 package com.spotify.RunnerFile.StepDefinitions;
 
+import com.spotify.POJOClasses.ErrorPOJO.ErrorMsg;
+import com.spotify.POJOClasses.FollowUnfollowArtist;
+import com.spotify.POJOClasses.User;
 import com.spotify.Services.UserService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.testng.Assert;
+
 import java.util.HashMap;
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
-
 public class UserServiceDef extends BaseUtility {
+    private static final Logger logger = LogManager.getLogger(UserServiceDef.class);
 
     UserService userService;
+
 
     @Given("Create UserService Entity")
     public void create_user_service_entity() {
@@ -36,13 +43,17 @@ public class UserServiceDef extends BaseUtility {
 
     @Then("Check Name And Id")
     public void check_name_and_id() {
-
+        User user = response.as(User.class);
+        logger.info("User Name : " + user.getDisplay_name() + "\n" +
+                "User ID : " + user.getId() + "\n" +
+                "User Country : " + user.getCountry() + "\n" +
+                "User Email :" + user.getEmail());
     }
 
     @Then("^error msg should be (.+)$")
-    public void error_msg_should_be_invalid_access_token(String errorMsg) {
-        response.then().assertThat()
-                .body("error.message", equalTo(errorMsg));
+    public void error_msg_should_be_invalid_access_token(String expectedErrorMsg) {
+        ErrorMsg errorMsg = response.as(ErrorMsg.class);
+        Assert.assertEquals(errorMsg.getError().getMessage(),expectedErrorMsg);
     }
 
     @When("Make a Get request for followed artists")
@@ -52,19 +63,26 @@ public class UserServiceDef extends BaseUtility {
 
     @When("Make a put request for following artists")
     public void make_a_put_request_for_following_artists() {
-        response = userService.followArtist();
+        FollowUnfollowArtist followUnfollowArtist = new FollowUnfollowArtist.Builder()
+                .addToList(artistId)
+                .build();
+
+        response = userService.followArtist(followUnfollowArtist);
     }
 
     @When("Make a delete request for unfollowing artists")
     public void make_a_delete_request_for_unfollowing_artists() {
-        response = userService.unfollowArtist();
+        FollowUnfollowArtist followUnfollowArtist = new FollowUnfollowArtist.Builder()
+                .addToList(artistId)
+                .build();
+
+        response = userService.unfollowArtist(followUnfollowArtist);
     }
 
     @Then("Verify List of artists")
     public void verify_list_of_artists() {
-
         List<HashMap> items = jsonPath.getList("artists.items");
-
-        items.forEach(x -> System.out.println(x.get("name")));
+        logger.info("Artist list :");
+        items.forEach(x -> logger.info("Artist Name :" + x.get("name")));
     }
 }

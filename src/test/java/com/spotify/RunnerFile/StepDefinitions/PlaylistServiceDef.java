@@ -1,14 +1,18 @@
 package com.spotify.RunnerFile.StepDefinitions;
 
+import com.spotify.POJOClasses.PlaylistPOJO.Item;
+import com.spotify.POJOClasses.PlaylistPOJO.Playlist;
+import com.spotify.POJOClasses.PlaylistPOJO.Tracks;
 import com.spotify.Services.PlaylistService;
 import com.spotify.UtilityClasses.PropertyFileManager.PropertyFileManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.LinkedHashMap;
-import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PlaylistServiceDef extends BaseUtility {
+    private static final Logger logger = LogManager.getLogger(PlaylistServiceDef.class);
 
     PlaylistService playlistService;
     String playListId;
@@ -27,7 +31,6 @@ public class PlaylistServiceDef extends BaseUtility {
     @Given("^Song name is (.+)$")
     public void songIdByName(String songName){
         songId = PropertyFileManager.getSongDataManager().songDataProp.getProperty(songName);
-        System.out.println(songName + " " + songId);
     }
 
 
@@ -72,24 +75,26 @@ public class PlaylistServiceDef extends BaseUtility {
                 "        }\n" +
                 "    ]\n" +
                 "}";
-        System.out.println(sample);
+
         response =  playlistService.removeTracksFromPlaylist(playListId,sample);
     }
 
 
     @Then("Check the name, id & description of given playlist")
     public void check_the_name_id_description_of_given_playlist() {
-        System.out.println("Details of playlist --> \n");
-        System.out.println("Name : " + jsonPath.get("name"));
-        System.out.println("Description " + jsonPath.get("description"));
-        System.out.println("Id : " + jsonPath.get("id"));
-        System.out.println("Owner : " + jsonPath.get("owner.display_name"));
-    }
+        Playlist playlist = response.as(Playlist.class);
 
+        logger.info("Details of playlist --> \nName : {}\nDescription {}\nId : {}\nNo of tracks : {}", playlist.name, playlist.description, playlist.id, playlist.tracks.items.size());
+        for(Item item : playlist.tracks.items){
+            logger.info(item.track.name + "--" + item.track.type);
+        }
+    }
 
     @Then("check the tracks of playlist")
     public void check_the_tracks_of_playlist() {
-        List<LinkedHashMap<Object,Object>> trackList = jsonPath.getList("items");
-        trackList.forEach(x->System.out.println(((LinkedHashMap)x.get("track")).get("name")));
+        Tracks tracks = response.as(Tracks.class);
+        for(Item item : tracks.items){
+            logger.info("{}--{}", item.track.name, item.track.type);
+        }
     }
 }

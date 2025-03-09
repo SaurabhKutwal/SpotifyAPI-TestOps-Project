@@ -19,31 +19,16 @@ public class UserService extends BaseService{
         return getRequest(BASE_PATH + "/following");
     }
 
-    public Response followArtist(){
+    public Response followArtist(Object payLoad){
         addQueryParam("type","artist");
         setContentType("json");
-
-        String sample = "{\n" +
-                "    \"ids\": [\n" +
-                "        \"4YRxDV8wJFPHPTeXepOstw\",\n" +
-                "        \"7uIbLdzzSEqnX0Pkrb56cR\",\n" +
-                "        \"0oOet2f43PA68X5RxKobEy\"\n" +
-                "    ]\n" +
-                "}";
-        setBody(sample);
+        setBody(payLoad);
         return putRequest(BASE_PATH + "/following");
     }
 
-    public Response unfollowArtist(){
+    public Response unfollowArtist(Object payLoad){
         addQueryParam("type","artist");
-
-        String sample = "{\n" +
-                "    \"ids\": [\n" +
-                "        \"0oOet2f43PA68X5RxKobEy\"\n" +
-                "    ]\n" +
-                "}";
-        setBody(sample);
-
+        setBody(payLoad);
         return deleteRequest(BASE_PATH + "/following");
     }
 }

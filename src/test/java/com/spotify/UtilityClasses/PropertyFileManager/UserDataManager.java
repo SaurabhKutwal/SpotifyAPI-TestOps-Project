@@ -14,12 +14,12 @@ public class UserDataManager {
         loadUserProperties();
     }
 
-    public static UserDataManager getInstance(){
+    protected static UserDataManager getInstance(){
         if(userDataManager == null) userDataManager = new UserDataManager();
         return userDataManager;
     }
 
-    void loadUserProperties(){
+    private void loadUserProperties(){
         try {
             InputStream file = Files.newInputStream(Paths.get("src/test/resources/PropertyFiles/UserData.properties"));
             userProp = new Properties();
