@@ -4,21 +4,22 @@ import com.spotify.Services.UserService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
-
 import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class UserServiceDef extends Manager{
+public class UserServiceDef extends BaseUtility {
 
     UserService userService;
 
-    @Given("^Make a RequestSpecification with (.+) authorization token$")
-    public void make_a_request_specification_with_right_authorization_token(String flag) {
+    @Given("Create UserService Entity")
+    public void create_user_service_entity() {
         userService = new UserService();
+    }
+
+    @Given("^Make a RequestSpecification with (.+) authorization token$")
+    public synchronized void make_a_request_specification_with_right_authorization_token(String flag) {
         userService.setToken(flag.equals("correct"));
     }
 
@@ -28,7 +29,7 @@ public class UserServiceDef extends Manager{
     }
 
     @Then("^Verify status code is (.+)$")
-    public void verify_status_code_is(Integer statusCode) {
+    public synchronized void verify_status_code_is(Integer statusCode) {
         jsonPath = response.then().extract().jsonPath();
         response.then().assertThat().statusCode(statusCode);
     }

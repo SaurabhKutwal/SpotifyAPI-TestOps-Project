@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 public class UserService extends BaseService{
     private static final String BASE_PATH = "/v1/me";
 
-
     public void setToken(Boolean tokenFlag){
         setTokenHeader(tokenFlag);
     }

@@ -1,8 +1,13 @@
 
-  Feature: validate User API service
+  Feature: Validate User API service
+
+
+    Background: Starting User Serivce modules
+      Given Create UserService Entity
 
   #######################################################################################################################
 
+    @UserService
     Scenario: Verify that We get User Profile Details for valid token request
       Given Make a RequestSpecification with correct authorization token
       When Make a Get request for profile
@@ -11,6 +16,7 @@
 
   #######################################################################################################################
 
+    @UserService
     Scenario: Verify that We get error msg for invalid token request
       Given Make a RequestSpecification with wrong authorization token
       When Make a Get request for profile
@@ -19,6 +25,7 @@
 
   #######################################################################################################################
 
+    @UserService
     Scenario: Verifyt that we can Follow artist
       Given Make a RequestSpecification with correct authorization token
       When Make a put request for following artists
@@ -26,6 +33,7 @@
 
   #######################################################################################################################
 
+    @UserService
     Scenario: Verifyt that we can Unfollow artist
       Given Make a RequestSpecification with correct authorization token
       When Make a delete request for unfollowing artists
@@ -33,6 +41,7 @@
 
   #######################################################################################################################
 
+    @UserService
     Scenario: Get the current user's followed artists.
       Given Make a RequestSpecification with correct authorization token
       When Make a Get request for followed artists

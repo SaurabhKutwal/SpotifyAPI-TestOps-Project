@@ -1,5 +1,6 @@
 package com.spotify.Services;
 
+import com.spotify.UtilityClasses.PropertyFileManager.PropertyFileManager;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -8,14 +9,17 @@ import io.restassured.specification.RequestSpecification;
 public class BaseService {
     private static final String BASE_URI = "https://api.spotify.com";
     protected RequestSpecification requestSpecification;
+    String authToken;
 
     protected BaseService(){
+        authToken = PropertyFileManager.getTokenManager().tokenProp.getProperty("access_token");
+
         RestAssured.baseURI = BASE_URI;
         this.requestSpecification = RestAssured.given();
     }
 
     protected void setTokenHeader(Boolean flag){
-        if(flag) this.requestSpecification.auth().oauth2("BQCZRZ99fYwerTFOA_rErcKbK7Sh8E75dYb1SXlx1iMXHXEI2gfi8EZ4eZmRQfAbdMjEyBpgwyBWIwX9fNALe4sO5nw2vSBiBFcAjZNyvGtAjLX-FYXtEtDYgcOAcnw2lEtqCogYJ3f8xerymchBetpxkZJXZj_4RkNCC1QPzlAaiYnP3IoXb9NYLpsaHqI2nYDgJzN_jlBkgKnLQubi2bef1VXtmERmtuadGauyKNa5iatsiSoOnlY2vyp9KN0tZuMjbTNO9Hvt0jdvLvsEZkIXKcYGk0OY2YFBdzSfIIlpzD22EXMEp4xx0FfR2lRyOnQ");
+        if(flag) this.requestSpecification.auth().oauth2(authToken);
         else this.requestSpecification.auth().oauth2("Random fjsadncansdocknasdciadmsc");
     }
 
@@ -36,11 +40,11 @@ public class BaseService {
     }
 
     protected Response getRequest(String endpoint){
-        return requestSpecification.when().get(endpoint);
+        return this.requestSpecification.when().get(endpoint);
     }
 
     protected Response putRequest(String endPoint){
-        return requestSpecification.when().put(endPoint);
+        return this.requestSpecification.when().put(endPoint);
     }
 
     protected Response deleteRequest(String endPoint){
@@ -48,7 +52,7 @@ public class BaseService {
     }
 
     protected Response postRequest(String endpoint){
-        return this.requestSpecification.log().all().when().post(endpoint);
+        return this.requestSpecification.when().post(endpoint);
     }
 
 }

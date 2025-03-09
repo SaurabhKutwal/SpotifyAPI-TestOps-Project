@@ -1,6 +1,7 @@
 package com.spotify.RunnerFile.StepDefinitions;
 
 import com.spotify.Services.ArtistService;
+import com.spotify.UtilityClasses.PropertyFileManager.PropertyFileManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -8,18 +9,24 @@ import io.cucumber.java.en.When;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ArtistServiceDef extends Manager{
+public class ArtistServiceDef extends BaseUtility {
 
     ArtistService artistService;
     String artistId;
 
-    @Given("Artist name is Shreya Ghoshal")
-    public void artist_name_is_shreya_ghoshal() {
-        artistId = "0oOet2f43PA68X5RxKobEy";
+    @Given("Create ArtistService Entity")
+    public void create_artist_service_entity() {
+        artistService = new ArtistService();
+    }
+
+    @Given("^Artist name is (.+)$")
+    public synchronized void artist_name_is_shreya_ghoshal(String artistName) {
+        //artistId = "0oOet2f43PA68X5RxKobEy";
+        artistId = PropertyFileManager.getArtistDataManager().artistProp.getProperty(artistName);
+
     }
     @When("Make a Get request for info of given artist")
     public void make_a_get_request_for_info_of_given_artist() {
-        artistService = new ArtistService();
         response = artistService.getArtist(artistId);
     }
     @Then("Check the information")
@@ -30,8 +37,7 @@ public class ArtistServiceDef extends Manager{
     }
 
     @When("^Make a Get request for top (.+) of given artist$")
-    public void make_a_get_request_for_top_tracks_of_given_artist(String flag) {
-        artistService = new ArtistService();
+    public synchronized void make_a_get_request_for_top_tracks_of_given_artist(String flag) {
         if(flag.equals("tracks"))response = artistService.getArtistTopTracks(artistId);
         else response = artistService.getArtistAlbums(artistId);
     }
@@ -48,7 +54,6 @@ public class ArtistServiceDef extends Manager{
     public void check_the_list_of_albums() {
         List<LinkedHashMap> albums = jsonPath.getList("items");
         albums.forEach(x -> System.out.println(x.get("name")));
-
     }
 
 }
